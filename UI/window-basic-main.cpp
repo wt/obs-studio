@@ -27,6 +27,7 @@
 #include <QDesktopWidget>
 #include <QRect>
 #include <QScreen>
+#include <QStringList>
 
 #include <util/dstr.h>
 #include <util/util.hpp>
@@ -4475,25 +4476,26 @@ void OBSBasic::OpenSceneProjector()
 
 void OBSBasic::UpdateTitleBar()
 {
-	stringstream name;
+	QStringList nameParts;
 
-	const char *profile = config_get_string(App()->GlobalConfig(),
-			"Basic", "Profile");
-	const char *sceneCollection = config_get_string(App()->GlobalConfig(),
-			"Basic", "SceneCollection");
+	QString profile = QString(config_get_string(App()->GlobalConfig(),
+	                          "Basic", "Profile"));
+	QString sceneCollection = QString(
+	                        config_get_string(App()->GlobalConfig(),
+	                        "Basic", "SceneCollection"));
 
-	name << "OBS ";
+	nameParts << "OBS ";
 	if (previewProgramMode)
-		name << "Studio ";
+		nameParts << "Studio ";
 
-	name << App()->GetVersionString();
+	nameParts << QString::fromStdString(App()->GetVersionString());
 	if (App()->IsPortableMode())
-		name << " - Portable Mode";
+		nameParts << " - Portable Mode";
 
-	name << " - " << Str("TitleBar.Profile") << ": " << profile;
-	name << " - " << Str("TitleBar.Scenes") << ": " << sceneCollection;
+	nameParts << " - " << tr("TitleBar.Profile") << ": " << profile;
+	nameParts << " - " << tr("TitleBar.Scenes") << ": " << sceneCollection;
 
-	setWindowTitle(QT_UTF8(name.str().c_str()));
+	setWindowTitle(nameParts.join(""));
 }
 
 int OBSBasic::GetProfilePath(char *path, size_t size, const char *file) const
